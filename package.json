@@ -1,0 +1,40 @@
+{
+  "name": "typst-app-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the typst.app web editor: projects, files, comments, sharing and local compilation",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:e2e": "TYPST_E2E=1 vitest run test/e2e",
+    "smoke": "node --import tsx scripts/smoke.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.4.0",
+    "yjs": "^13.6.33",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.4.0",
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  },
+  "bin": {
+    "typst-app-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "author": "Raindancer118",
+  "engines": {
+    "node": ">=20.3"
+  }
+}
