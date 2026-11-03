@@ -20,6 +20,9 @@ const HINTS: Record<string, string> = {
     "typst.app refuses further comments in this project. Free accounts cannot create comments at all; this needs a paid typst.app plan."
 };
 
+// Codes after which a fresh login can succeed; anything else is a real failure.
+const RENEW_CODES = new Set(["SIGNIN_NEEDED", "SESSION_INVALID", "SESSION_EXPIRED"]);
+
 export class TypstApiError extends Error {
   constructor(
     readonly codes: string[],
@@ -33,7 +36,7 @@ export class TypstApiError extends Error {
   }
 
   get needsSignin(): boolean {
-    return this.codes.includes("SIGNIN_NEEDED");
+    return this.codes.some(c => RENEW_CODES.has(c));
   }
 }
 

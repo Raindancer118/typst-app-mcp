@@ -50,6 +50,16 @@ describe("TypstApi.graphql", () => {
     expect(seen).toHaveLength(2);
   });
 
+  it.each(["SESSION_INVALID", "SESSION_EXPIRED"])("also renews the session on %s", async code => {
+    const { client, sessions } = api((_url, init) =>
+      new Headers(init.headers).get("cookie")!.includes("OLD")
+        ? json({ errors: [{ message: "", extensions: { code: [code] } }], data: null })
+        : json({ data: { ok: true } })
+    );
+    expect(await client.graphql("query { ok }", {})).toEqual({ ok: true });
+    expect(sessions.renewals).toBe(1);
+  });
+
   it("turns error codes into actionable messages", async () => {
     const { client } = api(() => json({ errors: [{ message: "", extensions: { code: ["PROJECT_NOT_FOUND"] } }], data: null }));
     const error = await client.graphql("query { project(id: \"x\") { id } }", {}).catch(e => e);
@@ -89,6 +99,17 @@ describe("TypstApi.rest", () => {
     const { client, sessions } = api(() =>
       n++ === 0
         ? new Response("Error: You must sign in to continue. (SIGNIN_NEEDED)", { status: 403, headers: { "content-type": "text/plain" } })
+        : new Response("ok")
+    );
+    await client.rest("GET", "files/p/f");
+    expect(sessions.renewals).toBe(1);
+  });
+
+  it("renews on a REST SESSION_INVALID answer", async () => {
+    let n = 0;
+    const { client, sessions } = api(() =>
+      n++ === 0
+        ? new Response("Error: Your session is invalid. (SESSION_INVALID)", { status: 401, headers: { "content-type": "text/plain" } })
         : new Response("ok")
     );
     await client.rest("GET", "files/p/f");
