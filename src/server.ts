@@ -5,7 +5,7 @@ import * as z from "zod/v4";
 import type { TemplateCatalog } from "./templates.js";
 import { formatDate, type Project, type TypstService } from "./typst.js";
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 const CHARACTER_LIMIT = 25_000;
 const IMAGE_TYPES: Record<string, string> = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif", ".webp": "image/webp" };
 const MAX_INLINE_IMAGE = 1_500_000;
